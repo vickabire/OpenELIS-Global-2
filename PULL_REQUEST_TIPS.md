@@ -14,11 +14,11 @@ guidelines:
 
 ## 2. Branch Naming
 
-- Branch name should reference issue number (e.g., issue-123)
+- Branch name should reference issue number (e.g., issue-1234)
 - Create new branches from updated develop:
   ```bash
   git checkout develop
-  git checkout -b issue-123
+  git checkout -b issue-1234
   ```
 
 ## 3. Pull Request References
