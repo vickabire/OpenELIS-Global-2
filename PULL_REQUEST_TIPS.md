@@ -120,7 +120,7 @@ guidelines:
 
 - Check GitHub Actions build status
 - Investigate failures using "Details" link
-- Run `mvn clean install` locally before pushing
+- Run `mvn clean install` locally before pushing to ensure the tests are passing
 
 Remember to review the "Using Git" documentation, particularly the "Submit the
 code" section, before creating pull requests.
