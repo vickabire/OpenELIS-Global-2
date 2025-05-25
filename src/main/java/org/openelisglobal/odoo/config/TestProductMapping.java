@@ -1,53 +1,118 @@
 package org.openelisglobal.odoo.config;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import jakarta.annotation.PostConstruct;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Configuration class for managing test-to-product mappings and prices in Odoo.
- * This class maintains the mapping between OpenELIS tests and Odoo products,
- * along with their corresponding prices.
- *
- * @author OpenELIS
- * @version 1.0.0
+ * Configuration class for mapping OpenELIS test IDs to Odoo product IDs and prices.
+ * This class maintains the mapping between OpenELIS tests and their corresponding
+ * Odoo products and prices, which is used for integration with the Odoo system.
+ * 
+ * The mappings are configured through application properties:
+ * - odoo.test.product.mapping: Maps test IDs to Odoo product IDs
+ * - odoo.test.price.mapping: Maps test IDs to their prices
+ * 
+ * Example configuration:
+ * odoo.test.product.mapping=test1=1,test2=2,test3=3
+ * odoo.test.price.mapping=test1=100.0,test2=150.0,test3=200.0
  */
 @Configuration
 @Getter
 @Setter
 public class TestProductMapping {
-    
+
     /**
-     * Map of test IDs to Odoo product IDs.
-     * This mapping is populated from the application-odoo.yml configuration.
+     * Raw string containing the test-to-product mapping configuration.
+     * Format: "testId=productId,testId=productId,..."
      */
-    @Value("#{${odoo.test.product.mapping}}")
-    private Map<String, Integer> testToProductMap = new HashMap<>();
-    
+    @Value("${odoo.test.product.mapping:#{null}}")
+    private String productMappingString;
+
     /**
-     * Map of test IDs to their prices.
-     * This mapping is populated from the application-odoo.yml configuration.
+     * Raw string containing the test-to-price mapping configuration.
+     * Format: "testId=price,testId=price,..."
      */
-    @Value("#{${odoo.test.price.mapping}}")
-    private Map<String, Double> testToPriceMap = new HashMap<>();
-    
+    @Value("${odoo.test.price.mapping:#{null}}")
+    private String priceMappingString;
+
     /**
-     * Gets the Odoo product ID for a given test ID.
+     * Map storing the parsed test ID to Odoo product ID mappings.
+     * Key: OpenELIS test ID
+     * Value: Odoo product ID
+     */
+    private final Map<String, Integer> testToProductMap = new HashMap<>();
+
+    /**
+     * Map storing the parsed test ID to price mappings.
+     * Key: OpenELIS test ID
+     * Value: Test price
+     */
+    private final Map<String, Double> testToPriceMap = new HashMap<>();
+
+    /**
+     * Initializes the mapping by parsing the configuration strings.
+     * This method is called after dependency injection is complete.
+     */
+    @PostConstruct
+    public void init() {
+        parseProductMapping();
+        parsePriceMapping();
+    }
+
+    /**
+     * Parses the product mapping string and populates the testToProductMap.
+     * The input string should be in the format "testId=productId,testId=productId,..."
+     * Invalid entries are silently skipped.
+     */
+    private void parseProductMapping() {
+        if (productMappingString != null && !productMappingString.isEmpty()) {
+            String[] entries = productMappingString.split(",");
+            for (String entry : entries) {
+                String[] kv = entry.split("=");
+                if (kv.length == 2) {
+                    testToProductMap.put(kv[0].trim(), Integer.parseInt(kv[1].trim()));
+                }
+            }
+        }
+    }
+
+    /**
+     * Parses the price mapping string and populates the testToPriceMap.
+     * The input string should be in the format "testId=price,testId=price,..."
+     * Invalid entries are silently skipped.
+     */
+    private void parsePriceMapping() {
+        if (priceMappingString != null && !priceMappingString.isEmpty()) {
+            String[] entries = priceMappingString.split(",");
+            for (String entry : entries) {
+                String[] kv = entry.split("=");
+                if (kv.length == 2) {
+                    testToPriceMap.put(kv[0].trim(), Double.parseDouble(kv[1].trim()));
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the Odoo product ID for a given test ID.
      *
-     * @param testId The OpenELIS test ID
+     * @param testId The OpenELIS test ID to look up
      * @return The corresponding Odoo product ID, or null if not found
      */
     public Integer getProductId(String testId) {
         return testToProductMap.get(testId);
     }
-    
+
     /**
-     * Gets the price for a given test ID.
+     * Retrieves the price for a given test ID.
      *
-     * @param testId The OpenELIS test ID
+     * @param testId The OpenELIS test ID to look up
      * @return The price of the test, or null if not found
      */
     public Double getPrice(String testId) {
