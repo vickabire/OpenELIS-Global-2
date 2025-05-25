@@ -36,6 +36,7 @@ import org.openelisglobal.dataexchange.service.order.ElectronicOrderService;
 import org.openelisglobal.internationalization.MessageUtil;
 import org.openelisglobal.notifications.dao.NotificationDAO;
 import org.openelisglobal.notifications.entity.Notification;
+import org.openelisglobal.odoo.service.OdooIntegrationService;
 import org.openelisglobal.organization.service.OrganizationService;
 import org.openelisglobal.organization.valueholder.Organization;
 import org.openelisglobal.patient.action.IPatientUpdate;
@@ -172,6 +173,9 @@ public class SamplePatientEntryRestController extends BaseSampleEntryController 
     @Autowired
     private SampleService sampleService;
 
+    @Autowired
+    private OdooIntegrationService odooIntegrationService;
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.setAllowedFields(ALLOWED_FIELDS);
@@ -267,7 +271,7 @@ public class SamplePatientEntryRestController extends BaseSampleEntryController 
         updateData.setProviderEmailNotificationTestIds(form.getProviderEmailNotificationTestIds());
         updateData.setProviderSMSNotificationTestIds(form.getProviderSMSNotificationTestIds());
         updateData.setCustomNotificationLogic(form.getCustomNotificationLogic());
-        if (Boolean.valueOf(ConfigurationProperties.getInstance().getPropertyValue(Property.CONTACT_TRACING))) {
+        if (Boolean.parseBoolean(ConfigurationProperties.getInstance().getPropertyValue(Property.CONTACT_TRACING))) {
             setContactTracingInfo(updateData, sampleOrder);
         }
         updateData.validateSample(result);
@@ -281,6 +285,10 @@ public class SamplePatientEntryRestController extends BaseSampleEntryController 
             try {
                 fhirTransformService.transformPersistOrderEntryFhirObjects(updateData, patientInfo,
                         form.getUseReferral(), form.getReferralItems());
+                
+                if (trackPayments) {
+                    odooIntegrationService.processOrder(updateData, patientInfo);
+                }
             } catch (FhirTransformationException | FhirPersistanceException e) {
                 LogEvent.logError(e);
             }
