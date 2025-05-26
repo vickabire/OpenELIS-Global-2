@@ -25,9 +25,6 @@ import org.springframework.stereotype.Service;
  * The client uses XML-RPC for communication and maintains a session with the
  * Odoo server. All operations are performed using the authenticated user's
  * credentials.
- *
- * @author OpenELIS
- * @version 1.0.0
  */
 @Service
 public class OdooClient {
@@ -66,8 +63,6 @@ public class OdooClient {
     /**
      * Establishes a connection to the Odoo server and authenticates the user. This
      * method must be called before performing any operations.
-     *
-     * @throws OdooConnectionException if the connection or authentication fails
      */
     public void connect() {
         try {
@@ -81,10 +76,6 @@ public class OdooClient {
 
     /**
      * Creates a new sales order in Odoo.
-     *
-     * @param orderData The order data to create
-     * @return The ID of the created order
-     * @throws OdooOperationException if the order creation fails
      */
     public Integer createOrder(Map<String, Object> orderData) {
         try {
@@ -99,10 +90,6 @@ public class OdooClient {
 
     /**
      * Updates an existing sales order in Odoo.
-     *
-     * @param orderId   The ID of the order to update
-     * @param orderData The updated order data
-     * @throws OdooOperationException if the order update fails
      */
     public void updateOrder(Integer orderId, Map<String, Object> orderData) {
         try {
@@ -117,10 +104,6 @@ public class OdooClient {
 
     /**
      * Retrieves a sales order from Odoo by its ID.
-     *
-     * @param orderId The ID of the order to retrieve
-     * @return The order data as a map
-     * @throws OdooOperationException if the order retrieval fails
      */
     @SuppressWarnings("unchecked")
     public Map<String, Object> getOrder(Integer orderId) {
@@ -139,10 +122,6 @@ public class OdooClient {
      * Creates a new customer (partner) in Odoo or retrieves an existing one.
      * Searches for an existing customer by email and creates a new one if not
      * found.
-     *
-     * @param partnerData The customer data to create or search for
-     * @return The ID of the created or found customer
-     * @throws OdooOperationException if the customer creation/retrieval fails
      */
     @SuppressWarnings("unchecked")
     public Integer createOrGetPartner(Map<String, Object> partnerData) {
@@ -171,10 +150,6 @@ public class OdooClient {
 
     /**
      * Creates an invoice for a sales order in Odoo.
-     *
-     * @param orderId The ID of the order to create an invoice for
-     * @return The ID of the created invoice
-     * @throws OdooOperationException if the invoice creation fails
      */
     public Integer createInvoice(Integer orderId) {
         try {

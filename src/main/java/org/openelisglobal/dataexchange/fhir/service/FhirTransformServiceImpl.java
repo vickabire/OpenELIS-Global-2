@@ -435,15 +435,6 @@ public class FhirTransformServiceImpl implements FhirTransformService {
         Bundle responseBundle = fhirPersistanceService.createUpdateFhirResourcesInFhirStore(fhirOperations);
     }
 
-    /**
-     * this is where connection to odoo should happen
-     * 
-     * @param updateData
-     * @param patientInfo
-     * @param useReferral
-     * @param referralItems
-     * @throws FhirLocalPersistingException
-     */
     @Override
     @Async
     @Transactional(readOnly = true)
@@ -454,7 +445,6 @@ public class FhirTransformServiceImpl implements FhirTransformService {
                 "transformPersistOrderEntryFhirObjects called");
         LogEvent.logTrace(this.getClass().getSimpleName(), "createFhirFromSamplePatient",
                 "accessionNumber - " + updateData.getAccessionNumber());
-
         CountingTempIdGenerator tempIdGenerator = new CountingTempIdGenerator();
         FhirOperations fhirOperations = new FhirOperations();
 

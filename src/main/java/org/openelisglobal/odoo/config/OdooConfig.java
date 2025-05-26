@@ -13,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
  * The configuration is populated through Spring's property injection mechanism
  * based on the properties defined in the application-odoo.yml file or any
  * configuration file i.e application.properties, common.properties.
- *
- * @author OpenELIS
- * @version 1.0.0
  */
 @Configuration
 @Getter
