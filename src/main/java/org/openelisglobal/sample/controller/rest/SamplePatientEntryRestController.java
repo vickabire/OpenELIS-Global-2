@@ -271,7 +271,7 @@ public class SamplePatientEntryRestController extends BaseSampleEntryController 
         updateData.setProviderEmailNotificationTestIds(form.getProviderEmailNotificationTestIds());
         updateData.setProviderSMSNotificationTestIds(form.getProviderSMSNotificationTestIds());
         updateData.setCustomNotificationLogic(form.getCustomNotificationLogic());
-        if (Boolean.parseBoolean(ConfigurationProperties.getInstance().getPropertyValue(Property.CONTACT_TRACING))) {
+        if (Boolean.valueOf(ConfigurationProperties.getInstance().getPropertyValue(Property.CONTACT_TRACING))) {
             setContactTracingInfo(updateData, sampleOrder);
         }
         updateData.validateSample(result);
