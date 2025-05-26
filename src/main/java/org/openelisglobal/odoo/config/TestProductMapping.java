@@ -1,26 +1,18 @@
 package org.openelisglobal.odoo.config;
 
+import jakarta.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import jakarta.annotation.PostConstruct;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Configuration class for mapping OpenELIS test IDs to Odoo product IDs and prices.
- * This class maintains the mapping between OpenELIS tests and their corresponding
- * Odoo products and prices, which is used for integration with the Odoo system.
- * 
- * The mappings are configured through application properties:
- * - odoo.test.product.mapping: Maps test IDs to Odoo product IDs
- * - odoo.test.price.mapping: Maps test IDs to their prices
- * 
- * Example configuration:
- * odoo.test.product.mapping=test1=1,test2=2,test3=3
- * odoo.test.price.mapping=test1=100.0,test2=150.0,test3=200.0
+ * Configuration class for mapping OpenELIS test IDs to Odoo product IDs and
+ * prices. This class maintains the mapping between OpenELIS tests and their
+ * corresponding Odoo products and prices, which is used for integration with
+ * the Odoo system.
  */
 @Configuration
 @Getter
@@ -28,36 +20,34 @@ import java.util.Map;
 public class TestProductMapping {
 
     /**
-     * Raw string containing the test-to-product mapping configuration.
-     * Format: "testId=productId,testId=productId,..."
+     * Raw string containing the test-to-product mapping configuration. Format:
+     * "testId=productId,testId=productId,..."
      */
     @Value("${odoo.test.product.mapping:#{null}}")
     private String productMappingString;
 
     /**
-     * Raw string containing the test-to-price mapping configuration.
-     * Format: "testId=price,testId=price,..."
+     * Raw string containing the test-to-price mapping configuration. Format:
+     * "testId=price,testId=price,..."
      */
     @Value("${odoo.test.price.mapping:#{null}}")
     private String priceMappingString;
 
     /**
-     * Map storing the parsed test ID to Odoo product ID mappings.
-     * Key: OpenELIS test ID
-     * Value: Odoo product ID
+     * Map storing the parsed test ID to Odoo product ID mappings. Key: OpenELIS
+     * test ID Value: Odoo product ID
      */
     private final Map<String, Integer> testToProductMap = new HashMap<>();
 
     /**
-     * Map storing the parsed test ID to price mappings.
-     * Key: OpenELIS test ID
+     * Map storing the parsed test ID to price mappings. Key: OpenELIS test ID
      * Value: Test price
      */
     private final Map<String, Double> testToPriceMap = new HashMap<>();
 
     /**
-     * Initializes the mapping by parsing the configuration strings.
-     * This method is called after dependency injection is complete.
+     * Initializes the mapping by parsing the configuration strings. This method is
+     * called after dependency injection is complete.
      */
     @PostConstruct
     public void init() {
@@ -66,8 +56,8 @@ public class TestProductMapping {
     }
 
     /**
-     * Parses the product mapping string and populates the testToProductMap.
-     * The input string should be in the format "testId=productId,testId=productId,..."
+     * Parses the product mapping string and populates the testToProductMap. The
+     * input string should be in the format "testId=productId,testId=productId,..."
      * Invalid entries are silently skipped.
      */
     private void parseProductMapping() {
@@ -83,9 +73,9 @@ public class TestProductMapping {
     }
 
     /**
-     * Parses the price mapping string and populates the testToPriceMap.
-     * The input string should be in the format "testId=price,testId=price,..."
-     * Invalid entries are silently skipped.
+     * Parses the price mapping string and populates the testToPriceMap. The input
+     * string should be in the format "testId=price,testId=price,..." Invalid
+     * entries are silently skipped.
      */
     private void parsePriceMapping() {
         if (priceMappingString != null && !priceMappingString.isEmpty()) {

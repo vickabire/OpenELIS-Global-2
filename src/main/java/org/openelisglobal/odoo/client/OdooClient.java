@@ -17,15 +17,14 @@ import org.openelisglobal.odoo.exception.OdooOperationException;
 import org.springframework.stereotype.Service;
 
 /**
- * Client class for interacting with the Odoo XML-RPC API.
- * This class handles all direct communication with the Odoo server, including:
- * - Authentication
- * - Creating and updating orders
- * - Managing customer records
- * - Generating invoices
+ * Client class for interacting with the Odoo XML-RPC API. This class handles
+ * all direct communication with the Odoo server, including: - Authentication -
+ * Creating and updating orders - Managing customer records - Generating
+ * invoices
  * <p>
- * The client uses XML-RPC for communication and maintains a session with the Odoo server.
- * All operations are performed using the authenticated user's credentials.
+ * The client uses XML-RPC for communication and maintains a session with the
+ * Odoo server. All operations are performed using the authenticated user's
+ * credentials.
  *
  * @author OpenELIS
  * @version 1.0.0
@@ -41,8 +40,8 @@ public class OdooClient {
     private final OdooConfig config;
 
     /**
-     * Constructs a new OdooClient with the specified configuration.
-     * Initializes the XML-RPC client and sets up the connection parameters.
+     * Constructs a new OdooClient with the specified configuration. Initializes the
+     * XML-RPC client and sets up the connection parameters.
      *
      * @param config The Odoo configuration containing connection details
      * @throws OdooConnectionException if the URL is malformed
@@ -53,7 +52,7 @@ public class OdooClient {
         this.db = config.getDatabase();
         this.username = config.getUsername();
         this.password = config.getPassword();
-        
+
         XmlRpcClientConfigImpl clientConfig = new XmlRpcClientConfigImpl();
         try {
             clientConfig.setServerURL(new URL(url + "/xmlrpc/2/object"));
@@ -65,14 +64,14 @@ public class OdooClient {
     }
 
     /**
-     * Establishes a connection to the Odoo server and authenticates the user.
-     * This method must be called before performing any operations.
+     * Establishes a connection to the Odoo server and authenticates the user. This
+     * method must be called before performing any operations.
      *
      * @throws OdooConnectionException if the connection or authentication fails
      */
     public void connect() {
         try {
-            Object[] params = new Object[]{db, username, password, new HashMap<>()};
+            Object[] params = new Object[] { db, username, password, new HashMap<>() };
             uid = (Integer) client.execute("common.authenticate", params);
         } catch (XmlRpcException e) {
             LogEvent.logError("Failed to connect to Odoo", e);
@@ -89,7 +88,8 @@ public class OdooClient {
      */
     public Integer createOrder(Map<String, Object> orderData) {
         try {
-            Object[] params = new Object[]{db, uid, password, config.getModels().getSaleOrder(), "create", orderData};
+            Object[] params = new Object[] { db, uid, password, config.getModels().getSaleOrder(), "create",
+                    orderData };
             return (Integer) client.execute("object.execute_kw", params);
         } catch (XmlRpcException e) {
             LogEvent.logError("Failed to create order in Odoo", e);
@@ -100,14 +100,14 @@ public class OdooClient {
     /**
      * Updates an existing sales order in Odoo.
      *
-     * @param orderId The ID of the order to update
+     * @param orderId   The ID of the order to update
      * @param orderData The updated order data
      * @throws OdooOperationException if the order update fails
      */
     public void updateOrder(Integer orderId, Map<String, Object> orderData) {
         try {
-            Object[] params = new Object[]{db, uid, password, config.getModels().getSaleOrder(), "write",
-                    Collections.singletonList(orderId), orderData};
+            Object[] params = new Object[] { db, uid, password, config.getModels().getSaleOrder(), "write",
+                    Collections.singletonList(orderId), orderData };
             client.execute("object.execute_kw", params);
         } catch (XmlRpcException e) {
             LogEvent.logError("Failed to update order in Odoo", e);
@@ -125,8 +125,8 @@ public class OdooClient {
     @SuppressWarnings("unchecked")
     public Map<String, Object> getOrder(Integer orderId) {
         try {
-            Object[] params = new Object[]{db, uid, password, config.getModels().getSaleOrder(), "read",
-                    Collections.singletonList(orderId), Arrays.asList("name", "partner_id", "amount_total", "state")};
+            Object[] params = new Object[] { db, uid, password, config.getModels().getSaleOrder(), "read",
+                    Collections.singletonList(orderId), Arrays.asList("name", "partner_id", "amount_total", "state") };
             Object[] results = (Object[]) client.execute("object.execute_kw", params);
             return (Map<String, Object>) results[0];
         } catch (XmlRpcException e) {
@@ -137,7 +137,8 @@ public class OdooClient {
 
     /**
      * Creates a new customer (partner) in Odoo or retrieves an existing one.
-     * Searches for an existing customer by email and creates a new one if not found.
+     * Searches for an existing customer by email and creates a new one if not
+     * found.
      *
      * @param partnerData The customer data to create or search for
      * @return The ID of the created or found customer
@@ -147,19 +148,20 @@ public class OdooClient {
     public Integer createOrGetPartner(Map<String, Object> partnerData) {
         try {
             // Search for existing partner
-            Object[] searchParams = new Object[]{db, uid, password, config.getModels().getResPartner(), "search_read",
+            Object[] searchParams = new Object[] { db, uid, password, config.getModels().getResPartner(), "search_read",
                     List.of(List.of(Arrays.asList("email", "=", partnerData.get("email")))),
-                Arrays.asList("id", "name", "email")};
-            
+                    Arrays.asList("id", "name", "email") };
+
             Object[] results = (Object[]) client.execute("object.execute_kw", searchParams);
-            
+
             if (results.length > 0) {
                 Map<String, Object> existingPartner = (Map<String, Object>) results[0];
                 return (Integer) existingPartner.get("id");
             }
-            
+
             // Create new partner if not found
-            Object[] createParams = new Object[]{db, uid, password, config.getModels().getResPartner(), "create", partnerData};
+            Object[] createParams = new Object[] { db, uid, password, config.getModels().getResPartner(), "create",
+                    partnerData };
             return (Integer) client.execute("object.execute_kw", createParams);
         } catch (XmlRpcException e) {
             LogEvent.logError("Failed to create/get partner in Odoo", e);
@@ -176,8 +178,8 @@ public class OdooClient {
      */
     public Integer createInvoice(Integer orderId) {
         try {
-            Object[] params = new Object[]{db, uid, password, config.getModels().getSaleOrder(), "action_invoice_create",
-                    Collections.singletonList(orderId)};
+            Object[] params = new Object[] { db, uid, password, config.getModels().getSaleOrder(),
+                    "action_invoice_create", Collections.singletonList(orderId) };
             return (Integer) client.execute("object.execute_kw", params);
         } catch (XmlRpcException e) {
             LogEvent.logError("Failed to create invoice in Odoo", e);
@@ -185,4 +187,3 @@ public class OdooClient {
         }
     }
 }
- 
