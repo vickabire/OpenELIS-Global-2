@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
  * All operations are performed using the authenticated user's credentials.
  *
  * @author OpenELIS
- * @version 1.0.0
  */
 @Service
 public class OdooClient {

@@ -9,7 +9,6 @@ package org.openelisglobal.odoo.exception;
  * - The server returns an error during connection
  *
  * @author OpenELIS
- * @version 1.0
  */
 public class OdooConnectionException extends RuntimeException {
     

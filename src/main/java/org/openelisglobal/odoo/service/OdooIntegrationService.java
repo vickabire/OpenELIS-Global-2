@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
  * 4. Generates invoices when required
  *
  * @author OpenELIS
- * @version 1.0.0
  */
 @Service
 public class OdooIntegrationService {

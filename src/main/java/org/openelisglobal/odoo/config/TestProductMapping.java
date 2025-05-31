@@ -13,11 +13,11 @@ import java.util.Map;
  * Configuration class for mapping OpenELIS test IDs to Odoo product IDs and prices.
  * This class maintains the mapping between OpenELIS tests and their corresponding
  * Odoo products and prices, which is used for integration with the Odoo system.
- * 
+ * <p>
  * The mappings are configured through application properties:
  * - odoo.test.product.mapping: Maps test IDs to Odoo product IDs
  * - odoo.test.price.mapping: Maps test IDs to their prices
- * 
+ * <p>
  * Example configuration:
  * odoo.test.product.mapping=test1=1,test2=2,test3=3
  * odoo.test.price.mapping=test1=100.0,test2=150.0,test3=200.0

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
  * mechanism based on the properties defined in the application-odoo.yml file.
  *
  * @author OpenELIS
- * @version 1.0.0
  */
 @Configuration
 @Getter

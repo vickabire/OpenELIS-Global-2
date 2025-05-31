@@ -10,7 +10,6 @@ package org.openelisglobal.odoo.exception;
  * - Business rules are violated
  *
  * @author OpenELIS
- * @version 1.0
  */
 public class OdooOperationException extends RuntimeException {
     
