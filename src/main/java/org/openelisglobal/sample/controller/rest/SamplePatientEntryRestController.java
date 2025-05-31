@@ -285,7 +285,10 @@ public class SamplePatientEntryRestController extends BaseSampleEntryController 
             try {
                 fhirTransformService.transformPersistOrderEntryFhirObjects(updateData, patientInfo,
                         form.getUseReferral(), form.getReferralItems());
-                odooIntegrationService.processOrder(updateData, patientInfo);
+                
+                if (trackPayments) {
+                    odooIntegrationService.processOrder(updateData, patientInfo);
+                }
             } catch (FhirTransformationException | FhirPersistanceException e) {
                 LogEvent.logError(e);
             }
