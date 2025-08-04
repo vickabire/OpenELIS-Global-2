@@ -28,6 +28,7 @@ import org.openelisglobal.internationalization.MessageUtil;
 import org.openelisglobal.notification.service.AnalysisNotificationConfigService;
 import org.openelisglobal.notification.service.TestNotificationConfigService;
 import org.openelisglobal.odoo.client.OdooClient;
+import org.openelisglobal.odoo.config.TestProductMapping;
 import org.openelisglobal.organization.service.OrganizationTypeService;
 import org.openelisglobal.referral.fhir.service.FhirReferralService;
 import org.openelisglobal.reports.service.WHONetReportServiceImpl;
@@ -83,8 +84,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "org.openelisglobal.sampleqaeventaction", "org.openelisglobal.analyzerresults", "org.openelisglobal.testreflex",
         "org.openelisglobal.county", "org.openelisglobal.sampletracking", "org.openelisglobal.testresultsview",
         "org.openelisglobal.projectorganization", "org.openelisglobal.sourceofsample",
-        "org.openelisglobal.testconfiguration", "org.openelisglobal.usertestsection",
-        "org.openelisglobal.county", "org.openelisglobal.odoo" }, excludeFilters = {
+        "org.openelisglobal.testconfiguration", "org.openelisglobal.usertestsection", "org.openelisglobal.county",
+        "org.openelisglobal.odoo" }, excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.patient.controller.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.organization.controller.*"),
                 @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org.openelisglobal.sample.controller.*"),
@@ -265,6 +266,12 @@ public class AppTestConfig implements WebMvcConfigurer {
     @Profile("test")
     public OdooClient odooClient() {
         return mock(OdooClient.class);
+    }
+
+    @Bean
+    @Profile("test")
+    public TestProductMapping testProductMapping() {
+        return mock(TestProductMapping.class);
     }
 
     @Bean()
